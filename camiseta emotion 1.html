@@ -96,7 +96,6 @@
       margin-top: 10px;
     }
 
-    /* ESTILOS PARA LA SELECCIÓN DE COLOR */
     .colors-grid {
       display: flex;
       gap: 12px;
@@ -235,11 +234,11 @@
 
   <header>
     <div class="logo">
-      <a href="Inicio.html"><img src="logo.png" alt="Logo de la tienda"></a>
+      <a href="index.html"><img src="logo.png" alt="Logo de la tienda"></a>
     </div>
     <div class="nav-links">
-      <a href="Inicio.html">≡ Menú</a>
-      <a href="Carrito.html">🛒 Carrito</a>
+      <a href="index.html">≡ Menú</a>
+      <a href="carrito.html">🛒 Carrito</a>
     </div>
   </header>
 
@@ -253,7 +252,6 @@
       <h1 class="product-title" id="prod-title">camiseta mixed emotion angel</h1>
       <div class="product-price" id="precio">$1000</div>
 
-      <!-- SECCIÓN DE SELECCIÓN DE COLOR -->
       <div class="section-label">Color</div>
       <div class="colors-grid">
         <button class="color-btn active" onclick="selectColor('Negro', this)">
@@ -270,7 +268,7 @@
         <button class="size-btn" onclick="selectSize('M', this)">M</button>
         <button class="size-btn" onclick="selectSize('L', this)">L</button>
         <button class="size-btn" onclick="selectSize('XL', this)">XL</button>
-         <button class="size-btn" onclick="selectSize('XXL', this)">XXL</button>
+        <button class="size-btn" onclick="selectSize('XXL', this)">XXL</button>
       </div>
 
       <div class="stock-info" id="stock-display">Disponibles: 8 unidades</div>
@@ -289,7 +287,6 @@
   </div>
 
   <script>
-    // MATRIZ DE INVENTARIO SEPARADA POR COLOR Y TALLA
     const inventario = {
       'Negro': {
         'S': 0,
@@ -297,7 +294,6 @@
         'L': 1,
         'XL': 1,
         'XXL': 0,
-
       },
       'Blanco': {
         'S': 0,
@@ -305,7 +301,6 @@
         'L': 0,
         'XL': 1,
         'XXL': 1,
-
       }
     };
 
@@ -316,20 +311,16 @@
 
     function selectColor(color, element) {
       selectedColor = color;
-      
       document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
       element.classList.add('active');
-
       resetQty();
       updateStockDisplay();
     }
 
     function selectSize(size, element) {
       selectedSize = size;
-      
       document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
       element.classList.add('active');
-
       resetQty();
       updateStockDisplay();
     }
@@ -394,6 +385,8 @@
       localStorage.setItem('miCarrito', JSON.stringify(carrito));
 
       alert(`¡Agregado! ${currentQty} unidad(es) Color: ${selectedColor} / Talla: ${selectedSize}`);
+      
+      // Corregido a minúsculas para GitHub Pages
       window.location.href = "carrito.html";
     }
 
