@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="logo.png">
+    <title>Carrito Punto Store - Wompi Integration</title>
+    <style>
+        :root {
+            --negro-fondo: #0a050d;
+            --blanco: #ffffff;
+            --rojo-vaciar: #dc3545;
+            --verde-comprar: #25d366;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background-color: var(--negro-fondo); color: var(--blanco); padding: 40px 20px; }
+        .contenedor { max-width: 600px; margin: 0 auto; background: #2b2b2b; padding: 25px; border-radius: 12px; }
+        h1 { margin-bottom: 20px; text-align: center; }
+        
+        .item-carrito { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #444; gap: 15px; }
+        .item-info { display: flex; align-items: center; gap: 15px; }
+        .item-imagen { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; background-color: #1a1a1a; }
+        
+        .seccion-bloque { margin-top: 20px; padding: 15px; background: #1f1f1f; border-radius: 8px; border: 1px solid #3d3d3d; }
+        .seccion-bloque h3 { margin-bottom: 12px; font-size: 1rem; color: #ddd; }
+        .opcion-pago { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+        .opcion-pago input[type="radio"] { accent-color: var(--verde-comprar); width: 18px; height: 18px; cursor: pointer; }
+
+        .campo-grupo { margin-bottom: 12px; }
+        .campo-grupo label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #ccc; }
+        .campo-grupo input, .campo-grupo select, .campo-grupo textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: #1a1a1a;
+            color: white;
+            font-size: 0.95rem;
+        }
+        .campo-grupo textarea { resize: vertical; min-height: 60px; }
+        .campo-grupo input:focus, .campo-grupo select:focus, .campo-grupo textarea:focus {
+            outline: none;
+            border-color: var(--verde-comprar);
+        }
+
+        .etiqueta-envio { display: inline-block; padding: 3px 8px; background: #25d366; color: #000; font-weight: bold; font-size: 0.8rem; border-radius: 4px; margin-top: 5px; }
+        .info-bodega { background: #222d22; border: 1px solid #25d366; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; color: #e0e0e0; }
+        .total { font-size: 1.2em; font-weight: bold; margin-top: 20px; text-align: right; }
+        .acciones { display: flex; gap: 10px; margin-top: 25px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-align: center; color: white; }
+        .btn-comprar { background: var(--verde-comprar); color: black; }
+        .btn-vaciar { background: var(--rojo-vaciar); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="contenedor">
+    <h1>Tu Carrito🛒</h1>
+    <div id="lista-productos"></div>
+
+    <div id="seccion-checkout" style="display: none;">
+        
+        <div class="seccion-bloque">
+            <h3>1. Método de Pago:</h3>
+            <label class="opcion-pago">
+                <input type="radio" name="metodoPago" value="anticipado" checked onchange="actualizarModoPago()">
+                <span><strong>Pago Anticipado:</strong> Pagas productos con Envío Gratuito (+$10.000 COP al carrito)</span>
+            </label>
+            <label class="opcion-pago">
+                <input type="radio" name="metodoPago" value="contraentrega" onchange="actualizarModoPago()">
+                <span><strong>Pago Contra Entrega:</strong> Pagas el envío ahora por Wompi y el producto al recibir</span>
+            </label>
+            <label class="opcion-pago">
+                <input type="radio" name="metodoPago" value="recoger_bodega" onchange="actualizarModoPago()">
+                <span><strong>Recoger en Bodega:</strong> Aparta con $10.000 COP (se descuenta del valor de tu prenda)</span>
+            </label>
+        </div>
+
+        <div class="seccion-bloque" id="bloque-datos">
+            <h3 id="titulo-paso-2">2. Datos de Envío:</h3>
+            
+            <div class="info-bodega" id="bloque-info-bodega" style="display: none;">
+                📍 <strong>Punto de Recogida:</strong> Avenida calle 3 # 25a - 76, Barrio Santa Isabel, Bogotá.<br>
+                <small>Reserva abonando $10.000 COP. El saldo restante de la prenda se liquida al momento de la entrega en bodega.</small>
+            </div>
+
+            <div class="campo-grupo" id="grupo-destino" style="display: none;">
+                <label for="select-destino">Zona de Destino (*):</label>
+                <select id="select-destino" onchange="actualizarModoPago()">
+                    <option value="16000">Bogotá D.C. ($16.000 COP)</option>
+                    <option value="23000">Cundinamarca ($23.000 COP)</option>
+                    <option value="30000">Fuera de Cundinamarca / Nacional ($30.000 COP)</option>
+                </select>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="cliente-nombre">Nombre Completo (*):</label>
+                <input type="text" id="cliente-nombre" placeholder="Ej: Juan Pérez" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="cliente-cedula">Número de Cédula (*):</label>
+                <input type="text" id="cliente-cedula" placeholder="Ej: 1018123456" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="cliente-telefono">Teléfono / WhatsApp Principal (*):</label>
+                <input type="tel" id="cliente-telefono" placeholder="Ej: 3001234567" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="cliente-telefono2">Teléfono Secundario (Opcional):</label>
+                <input type="tel" id="cliente-telefono2" placeholder="Ej: 3109876543">
+            </div>
+
+            <div class="campo-grupo" id="grupo-municipio">
+                <label for="cliente-municipio">Ciudad / Municipio (*):</label>
+                <input type="text" id="cliente-municipio" placeholder="Ej: Arbelaez, Cundinamarca" required>
+            </div>
+
+            <div class="campo-grupo" id="grupo-direccion">
+                <label for="cliente-direccion">Dirección Completa (*):</label>
+                <input type="text" id="cliente-direccion" placeholder="Ej: Calle 10 # 4-20 B/ Centro" required>
+            </div>
+
+            <div class="campo-grupo" id="grupo-info-adicional">
+                <label for="cliente-info-adicional">Información adicional del lugar de entrega (Opcional):</label>
+                <textarea id="cliente-info-adicional" placeholder="Ej: Apto 201, Torres de Santa Inés, dejar en portería"></textarea>
+            </div>
+        </div>
+
+        <div class="total" id="precio-total">Total: $0</div>
+        <div class="acciones">
+            <button onclick="limpiar()" class="btn btn-vaciar">Vaciar</button>
+            <button id="btn-pagar" onclick="pagarConWompi()" class="btn btn-comprar">
+                Pagar con Wompi →
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://checkout.wompi.co/widget.js"></script>
+
+<script>
+    let totalAcumulado = 0;
+    const RECARGO_ANTICIPADO = 10000;
+    const ABONO_RESERVA_BODEGA = 10000;
+    const enlaceWhatsAppBase = "https://wa.me/message/5YOXGORGZJP3J1"; 
+
+    function mostrarCarrito() {
+        let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+        let cont = document.getElementById('lista-productos');
+        let seccionCheckout = document.getElementById('seccion-checkout');
+        
+        cont.innerHTML = "";
+        totalAcumulado = 0;
+
+        if (carrito.length === 0) {
+            cont.innerHTML = "<p style='text-align:center; padding: 25px 0; color: #aaa;'>El carrito está vacío🛒</p>";
+            seccionCheckout.style.display = 'none';
+            return;
+        }
+
+        seccionCheckout.style.display = 'block';
+
+        carrito.forEach(item => {
+            let cantidad = item.cantidad || 1;
+            let precioUnitario = item.precio || 0;
+            let subtotal = precioUnitario * cantidad;
+            let imagenSrc = item.imagen || 'camisera e 1.jpg';
+            totalAcumulado += subtotal;
+
+            cont.innerHTML += `
+                <div class="item-carrito">
+                    <div class="item-info">
+                        <img src="${imagenSrc}" alt="${item.nombre}" class="item-imagen">
+                        <div>
+                            <strong>${item.nombre}</strong><br>
+                            <small style="color: #aaa;">Cantidad: ${cantidad}</small>
+                        </div>
+                    </div>
+                    <strong>$${subtotal.toLocaleString('es-CO')}</strong>
+                </div>
+            `;
+        });
+
+        actualizarModoPago();
+    }
+
+    function actualizarModoPago() {
+        let totalElemento = document.getElementById('precio-total');
+        let btnPagar = document.getElementById('btn-pagar');
+        let tipoPago = document.querySelector('input[name="metodoPago"]:checked').value;
+        
+        let grupoDestino = document.getElementById('grupo-destino');
+        let bloqueInfoBodega = document.getElementById('bloque-info-bodega');
+        let grupoMunicipio = document.getElementById('grupo-municipio');
+        let grupoDireccion = document.getElementById('grupo-direccion');
+        let grupoInfoAdicional = document.getElementById('grupo-info-adicional');
+        let tituloPaso2 = document.getElementById('titulo-paso-2');
+
+        if (totalAcumulado <= 0) {
+            totalElemento.innerText = "Total: $0";
+            btnPagar.innerText = "Pagar con Wompi →";
+            return;
+        }
+
+        if (tipoPago === 'contraentrega') {
+            grupoDestino.style.display = 'block';
+            bloqueInfoBodega.style.display = 'none';
+            grupoMunicipio.style.display = 'block';
+            grupoDireccion.style.display = 'block';
+            grupoInfoAdicional.style.display = 'block';
+            tituloPaso2.innerText = "2. Datos de Envío:";
+
+            let costoEnvio = parseInt(document.getElementById('select-destino').value);
+            totalElemento.innerHTML = `Total a Pagar Ahora (Envío): $${costoEnvio.toLocaleString('es-CO')}`;
+            btnPagar.innerText = `Pagar Envío por Wompi ($${costoEnvio.toLocaleString('es-CO')}) →`;
+
+        } else if (tipoPago === 'recoger_bodega') {
+            grupoDestino.style.display = 'none';
+            bloqueInfoBodega.style.display = 'block';
+            grupoMunicipio.style.display = 'none';
+            grupoDireccion.style.display = 'none';
+            grupoInfoAdicional.style.display = 'none';
+            tituloPaso2.innerText = "2. Datos del Cliente (Recogida):";
+
+            totalElemento.innerHTML = `Abono Reserva Ahora: $${ABONO_RESERVA_BODEGA.toLocaleString('es-CO')} <br><span class="etiqueta-envio">SE DESCUENTA DEL VALOR DE TU PRENDA</span>`;
+            btnPagar.innerText = `Apartar Prenda por Wompi ($${ABONO_RESERVA_BODEGA.toLocaleString('es-CO')}) →`;
+
+        } else {
+            grupoDestino.style.display = 'none';
+            bloqueInfoBodega.style.display = 'none';
+            grupoMunicipio.style.display = 'block';
+            grupoDireccion.style.display = 'block';
+            grupoInfoAdicional.style.display = 'block';
+            tituloPaso2.innerText = "2. Datos de Envío:";
+
+            let totalConAnticipado = totalAcumulado + RECARGO_ANTICIPADO;
+            totalElemento.innerHTML = `Total: $${totalConAnticipado.toLocaleString('es-CO')} <br><span class="etiqueta-envio">¡ENVÍO GRATUITO!</span>`;
+            btnPagar.innerText = "Pagar con Wompi →";
+        }
+    }
+
+    function validarFormulario() {
+        let nombre = document.getElementById('cliente-nombre').value.trim();
+        let cedula = document.getElementById('cliente-cedula').value.trim();
+        let telefono = document.getElementById('cliente-telefono').value.trim();
+        let tipoPago = document.querySelector('input[name="metodoPago"]:checked').value;
+
+        if (!nombre || !cedula || !telefono) {
+            alert("Por favor completa tu nombre, cédula y teléfono principal.");
+            return false;
+        }
+
+        if (tipoPago !== 'recoger_bodega') {
+            let municipio = document.getElementById('cliente-municipio').value.trim();
+            let direccion = document.getElementById('cliente-direccion').value.trim();
+            if (!municipio || !direccion) {
+                alert("Por favor completa la ciudad y dirección de envío.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function pagarConWompi() {
+        if (totalAcumulado <= 0) {
+            alert("Tu carrito está vacío.");
+            return;
+        }
+
+        if (!validarFormulario()) {
+            return;
+        }
+
+        let btnPagar = document.getElementById('btn-pagar');
+        btnPagar.disabled = true;
+
+        let tipoPago = document.querySelector('input[name="metodoPago"]:checked').value;
+        let montoAPagar = 0;
+        let costoEnvio = 0;
+
+        if (tipoPago === 'contraentrega') {
+            costoEnvio = parseInt(document.getElementById('select-destino').value);
+            montoAPagar = costoEnvio;
+        } else if (tipoPago === 'recoger_bodega') {
+            montoAPagar = ABONO_RESERVA_BODEGA;
+        } else {
+            montoAPagar = totalAcumulado + RECARGO_ANTICIPADO;
+        }
+
+        let nombreCliente = document.getElementById('cliente-nombre').value.trim();
+        let telCliente = document.getElementById('cliente-telefono').value.trim();
+
+        // 1. Generar Referencia Única por Milisegundos + Aleatorio
+        const referenciaUnica = 'RZ-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+
+        // 2. Pasar los datos requeridos por Wompi explícitamente evita la reutilización del token consumido
+        const checkout = new WidgetCheckout({
+            currency: 'COP',
+            amountInCents: montoAPagar * 100,
+            reference: referenciaUnica,
+            publicKey: 'pub_prod_FNHUbqR4GVoLYyNgsc1BewFvLzYxvYyv',
+            customerData: {
+                fullName: nombreCliente,
+                phoneNumber: telCliente,
+                phoneNumberPrefix: '+57'
+            }
+        });
+
+        checkout.open(function (result) {
+            btnPagar.disabled = false;
+            
+            var transaction = result.transaction;
+            if (transaction && transaction.status === 'APPROVED') {
+                
+                let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+                let detalleProductos = "";
+                
+                carrito.forEach((item, index) => {
+                    let sub = (item.precio || 0) * (item.cantidad || 1);
+                    detalleProductos += `${index + 1}. ${item.nombre} x${item.cantidad || 1} - $${sub.toLocaleString('es-CO')}\n`;
+                });
+
+                let cedulaCliente = document.getElementById('cliente-cedula').value.trim();
+                let tel2Cliente = document.getElementById('cliente-telefono2').value.trim();
+                let infoAdicional = document.getElementById('cliente-info-adicional').value.trim();
+
+                let mensaje = `✅ *NUEVA COMPRA CONFIRMADA*\n\n`;
+                mensaje += `*ID Transacción Wompi:* ${transaction.id || 'N/A'}\n`;
+                mensaje += `*Referencia:* ${referenciaUnica}\n\n`;
+                
+                mensaje += `👤 *DATOS DEL CLIENTE:*\n`;
+                mensaje += `• *Nombre:* ${nombreCliente}\n`;
+                mensaje += `• *Cédula:* ${cedulaCliente}\n`;
+                mensaje += `• *Teléfono Principal:* ${telCliente}\n`;
+                if (tel2Cliente) {
+                    mensaje += `• *Teléfono Secundario:* ${tel2Cliente}\n`;
+                }
+
+                if (tipoPago === 'contraentrega') {
+                    let munCliente = document.getElementById('cliente-municipio').value.trim();
+                    let dirCliente = document.getElementById('cliente-direccion').value.trim();
+                    let selectDestino = document.getElementById('select-destino');
+                    let destinoTexto = selectDestino.options[selectDestino.selectedIndex].text;
+                    
+                    mensaje += `• *Municipio/Ciudad:* ${munCliente}\n`;
+                    mensaje += `• *Dirección:* ${dirCliente}\n`;
+                    if (infoAdicional) {
+                        mensaje += `• *Info Adicional Entrega:* ${infoAdicional}\n`;
+                    }
+                    mensaje += `\n🚚 *MODALIDAD: CONTRA ENTREGA*\n`;
+                    mensaje += `• *Zona:* ${destinoTexto}\n`;
+                    mensaje += `• *Pago Envío Aprobado:* $${costoEnvio.toLocaleString('es-CO')} COP\n`;
+                    mensaje += `• *Saldo a Pagar al Recibir:* $${totalAcumulado.toLocaleString('es-CO')} COP\n\n`;
+
+                } else if (tipoPago === 'recoger_bodega') {
+                    let saldoPendiente = totalAcumulado - ABONO_RESERVA_BODEGA;
+                    if (saldoPendiente < 0) saldoPendiente = 0;
+
+                    mensaje += `\n📍 *MODALIDAD: RECOGER EN BODEGA*\n`;
+                    mensaje += `• *Ubicación:* Avenida calle 3 # 25a - 76, Barrio Santa Isabel, Bogotá D.C.\n`;
+                    mensaje += `• *Abono Reserva Aprobado:* $${ABONO_RESERVA_BODEGA.toLocaleString('es-CO')} COP\n`;
+                    mensaje += `• *Saldo Pendiente a Pagar en Bodega:* $${saldoPendiente.toLocaleString('es-CO')} COP\n\n`;
+
+                } else {
+                    let munCliente = document.getElementById('cliente-municipio').value.trim();
+                    let dirCliente = document.getElementById('cliente-direccion').value.trim();
+                    
+                    mensaje += `• *Municipio/Ciudad:* ${munCliente}\n`;
+                    mensaje += `• *Dirección:* ${dirCliente}\n`;
+                    if (infoAdicional) {
+                        mensaje += `• *Info Adicional Entrega:* ${infoAdicional}\n`;
+                    }
+                    mensaje += `\n💳 *MODALIDAD: PAGO ANTICIPADO*\n`;
+                    mensaje += `• *Estado:* Pago Total Aprobado en Wompi\n`;
+                    mensaje += `• *Envío:* ¡GRATUITO!\n\n`;
+                }
+
+                mensaje += `📦 *DETALLE DEL PEDIDO:*\n${detalleProductos}\n`;
+                mensaje += `💰 *TOTAL PAGADO EN WOMPI:* $${montoAPagar.toLocaleString('es-CO')} COP\n\n`;
+                mensaje += `Hola, acabo de realizar el pago por la web. Adjunto este comprobante con mis datos para agendar.`;
+
+                let urlWpp = `${enlaceWhatsAppBase}?text=${encodeURIComponent(mensaje)}`;
+
+                alert('¡Pago aprobado correctamente! Serás redirigido a WhatsApp para agendar tu pedido.');
+                
+                localStorage.removeItem('miCarrito');
+                mostrarCarrito();
+                window.location.href = urlWpp;
+            }
+        });
+    }
+
+    function limpiar() {
+        localStorage.removeItem('miCarrito');
+        mostrarCarrito();
+    }
+
+    mostrarCarrito();
+</script>
+</body>
+</html>
