@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Camiseta Mixed Emotion Angel - Punto Store</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 5%;
+      background-color: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    /* BOTÓN ADMIN EN EL HEADER */
+    .btn-admin-header {
+      background: transparent;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .btn-admin-header:hover { background: #00ff88; color: #000; }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .product-image img {
+      width: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+      background-color: #222;
+    }
+
+    .product-details {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .product-title {
+      font-size: 2rem;
+      font-weight: 700;
+      text-transform: lowercase;
+    }
+
+    .product-price {
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .section-label {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 10px;
+    }
+
+    /* ESTILOS PARA LA SELECCIÓN DE COLOR */
+    .colors-grid {
+      display: flex;
+      gap: 12px;
+    }
+
+    .color-btn {
+      background: transparent;
+      border: 1px solid #444;
+      color: #fff;
+      padding: 8px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .color-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #666;
+    }
+
+    .color-swatch.negro { background-color: #000; }
+    .color-swatch.blanco { background-color: #fff; }
+
+    .color-btn:hover {
+      border-color: #fff;
+    }
+
+    .color-btn.active {
+      background-color: #333;
+      border-color: #fff;
+    }
+
+    .sizes-grid {
+      display: flex;
+      gap: 10px;
+    }
+
+    .size-btn {
+      background: transparent;
+      border: 1px solid #444;
+      color: #fff;
+      padding: 10px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .size-btn:hover:not(.out-of-stock) {
+      border-color: #fff;
+    }
+
+    .size-btn.active {
+      background-color: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+
+    .size-btn.out-of-stock {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: #222;
+      text-decoration: line-through;
+    }
+
+    .stock-info {
+      font-size: 0.85rem;
+      color: #00ff88;
+      font-weight: 600;
+    }
+
+    .stock-info.out {
+      color: #ff4444;
+    }
+
+    /* PANEL PRIVADO EN PANTALLA */
+    .admin-stock-panel { display: none; font-size: 0.85rem; color: #00ff88; background: #1e261f; padding: 10px; border-radius: 4px; border: 1px dashed #00ff88; margin-top: 5px; }
+
+    /* MODAL FLOTANTE EDITOR DE STOCK */
+    .modal-editor { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
+    .modal-content { background: #1e1e1e; padding: 25px; border-radius: 8px; width: 320px; border: 1px solid #00ff88; box-shadow: 0 0 15px rgba(0,255,136,0.2); }
+    .modal-content h3 { color: #00ff88; margin-bottom: 15px; text-align: center; }
+    .fila-stock { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .fila-stock input { width: 60px; padding: 5px; background: #121212; border: 1px solid #444; color: #fff; text-align: center; border-radius: 4px; font-weight: bold; }
+    .btn-guardar-admin { width: 100%; padding: 10px; background: #00ff88; border: none; color: #000; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 15px; }
+    .btn-cerrar-modal { width: 100%; padding: 6px; background: transparent; border: none; color: #888; cursor: pointer; margin-top: 5px; font-size: 0.8rem; }
+
+    .purchase-row {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      border: 1px solid #444;
+      border-radius: 4px;
+    }
+
+    .quantity-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .quantity-input {
+      width: 40px;
+      text-align: center;
+      background: none;
+      border: none;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .btn-cart {
+      flex: 1;
+      background-color: transparent;
+      border: 1px solid #25d366;
+      color: #25d366;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-cart:hover:not(:disabled) {
+      background-color: #25d366;
+      color: #000;
+    }
+
+    .btn-cart:disabled {
+      border-color: #444;
+      color: #555;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <a href="Inicio.html"><img src="logo.png" alt="Logo de la tienda"></a>
+    </div>
+    <div class="nav-links">
+      <a href="Inicio.html">≡ Menú</a>
+      <a href="Carrito.html">🛒 Carrito</a>
+      <button class="btn-admin-header" onclick="abrirEditorStock()">⚙ Stock</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="product-image">
+      <img src="camiseta 9.jpg" id="main-img" alt="Camiseta">
+    </div>
+
+    <div class="product-details">
+      <div class="breadcrumb">Inicio / camiseta emotion</div>
+      <h1 class="product-title" id="prod-title">camiseta Mixed Emotion Angel</h1>
+      <div class="product-price" id="precio">$110.000</div>
+
+      <!-- SECCIÓN DE SELECCIÓN DE COLOR -->
+      <div class="section-label">Color</div>
+      <div class="colors-grid">
+        <button class="color-btn active" onclick="selectColor('Negro', this)">
+          <span class="color-swatch negro"></span> Negro
+        </button>
+        <button class="color-btn" onclick="selectColor('Blanco', this)">
+          <span class="color-swatch blanco"></span> Blanco
+        </button>
+      </div>
+
+      <div class="section-label">Talla</div>
+      <div class="sizes-grid">
+        <button class="size-btn" data-talla="S" onclick="selectSize('S', this)">S</button>
+        <button class="size-btn" data-talla="M" onclick="selectSize('M', this)">M</button>
+        <button class="size-btn" data-talla="L" onclick="selectSize('L', this)">L</button>
+        <button class="size-btn" data-talla="XL" onclick="selectSize('XL', this)">XL</button>
+        <button class="size-btn" data-talla="XXL" onclick="selectSize('XXL', this)">XXL</button>
+      </div>
+
+      <div class="stock-info" id="stock-display">Disponibles: 0 unidades</div>
+
+      <!-- PANEL INFORMATIVO ADMIN EN PANTALLA -->
+      <div class="admin-stock-panel" id="admin-panel">
+        <strong>[MODO ADMIN]</strong> Stock Talla <span id="admin-talla-lbl">-</span>: <span id="admin-stock-val">0</span> unidades.
+      </div>
+
+      <div class="purchase-row">
+        <div class="quantity-selector">
+          <button class="quantity-btn" onclick="changeQty(-1)">-</button>
+          <input type="text" class="quantity-input" id="qty" value="1" readonly>
+          <button class="quantity-btn" onclick="changeQty(1)">+</button>
+        </div>
+        
+        <button class="btn-cart" id="btn-add" onclick="addToCart()">🛒 Agregar al Carrito</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL FLOTANTE EDITOR DE STOCK -->
+  <div class="modal-editor" id="modalEditor">
+    <div class="modal-content">
+      <h3>Gestionar Inventario</h3>
+      <div id="inputsStockContainer"></div>
+      <button class="btn-guardar-admin" onclick="guardarNuevoStock()">Guardar Cambios</button>
+      <button class="btn-cerrar-modal" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    const CLAVE_ADMIN = "9876";
+
+    // CLAVE ÚNICA EN LOCALSTORAGE PARA ESTA CAMISETA (Mixed Emotion Angel)
+    const STORAGE_KEY = 'inventarioCamisetaMixedEmotionAngel';
+
+    // INVENTARIO INICIAL POR DEFECTO
+    const stockInicial = {
+      'Negro': {
+        'S': 0,
+        'M': 0,
+        'L': 0,
+        'XL': 0,
+        'XXL': 0
+      },
+      'Blanco': {
+        'S': 0,
+        'M': 0,
+        'L': 1,
+        'XL': 0,
+        'XXL': 0
+      }
+    };
+
+    let inventario = JSON.parse(localStorage.getItem(STORAGE_KEY)) || stockInicial;
+    let selectedColor = 'Negro';
+    let selectedSize = '';
+    let currentQty = 1;
+    const precioNumerico = 110000;
+
+    function selectColor(color, element) {
+      selectedColor = color;
+      document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+      validarDisponibilidadTallas();
+    }
+
+    function validarDisponibilidadTallas() {
+      const botonesTalla = document.querySelectorAll('.size-btn');
+      let primeraTallaDisponible = null;
+
+      botonesTalla.forEach(btn => {
+        const talla = btn.getAttribute('data-talla');
+        const stock = inventario[selectedColor][talla];
+
+        btn.classList.remove('active', 'out-of-stock');
+
+        if (stock <= 0) {
+          btn.classList.add('out-of-stock');
+        } else if (!primeraTallaDisponible) {
+          primeraTallaDisponible = { talla, element: btn };
+        }
+      });
+
+      if (primeraTallaDisponible) {
+        selectSize(primeraTallaDisponible.talla, primeraTallaDisponible.element);
+      } else {
+        selectedSize = '';
+        document.getElementById('btn-add').disabled = true;
+        updateStockDisplay(0);
+        actualizarVistaAdmin(0);
+      }
+    }
+
+    function selectSize(size, element) {
+      const stock = inventario[selectedColor][size];
+      if (stock <= 0) return;
+
+      selectedSize = size;
+      document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+
+      resetQty();
+      document.getElementById('btn-add').disabled = false;
+      updateStockDisplay(stock);
+      actualizarVistaAdmin(stock);
+    }
+
+    function resetQty() {
+      currentQty = 1;
+      document.getElementById('qty').value = currentQty;
+    }
+
+    function updateStockDisplay(stock) {
+      const stockDisplay = document.getElementById('stock-display');
+
+      if (stock > 0) {
+        stockDisplay.innerText = `Disponibles: ${stock} unidades (${selectedColor} / Talla ${selectedSize})`;
+        stockDisplay.className = "stock-info";
+      } else {
+        stockDisplay.innerText = `Agotado en color ${selectedColor} / Talla ${selectedSize || 'seleccionada'}`;
+        stockDisplay.className = "stock-info out";
+      }
+    }
+
+    function changeQty(amount) {
+      if (!selectedSize) return;
+      const maxStock = inventario[selectedColor][selectedSize];
+      if (maxStock === 0) return;
+
+      if (currentQty + amount >= 1 && currentQty + amount <= maxStock) {
+        currentQty += amount;
+        document.getElementById('qty').value = currentQty;
+      }
+    }
+
+    function addToCart() {
+      if (!selectedSize) return;
+      const maxStock = inventario[selectedColor][selectedSize];
+
+      if (maxStock === 0) {
+        alert('Esta combinación de color y talla se encuentra agotada por el momento.');
+        return;
+      }
+
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      const nombreProd = `Camiseta Mixed Emotion Angel (${selectedColor} - ${selectedSize})`;
+      let productoExistente = carrito.find(item => item.nombre === nombreProd);
+
+      if (productoExistente) {
+        if (productoExistente.cantidad + currentQty > maxStock) {
+          alert(`No puedes agregar más unidades. El stock máximo para este producto es ${maxStock}.`);
+          return;
+        }
+        productoExistente.cantidad += currentQty;
+      } else {
+        carrito.push({
+          nombre: nombreProd,
+          precio: precioNumerico,
+          color: selectedColor,
+          talla: selectedSize,
+          cantidad: currentQty,
+          imagen: 'camiseta 9.jpg'
+        });
+      }
+
+      localStorage.setItem('miCarrito', JSON.stringify(carrito));
+      alert(`¡Agregado! ${currentQty} unidad(es) Color: ${selectedColor} / Talla: ${selectedSize}`);
+      window.location.href = "Carrito.html";
+    }
+
+    /* GESTIÓN DE MODAL Y AUTENTICACIÓN ADMIN */
+    function abrirEditorStock() {
+      const contenedor = document.getElementById('inputsStockContainer');
+      
+      contenedor.innerHTML = `
+        <div style="margin-bottom: 15px;" id="bloquePass">
+          <label style="font-size: 0.8rem; display:block; margin-bottom: 5px;">Contraseña Admin:</label>
+          <input type="password" id="passInput" style="width: 100%; padding: 8px; background: #121212; border: 1px solid #444; color: white; border-radius: 4px;">
+          <button onclick="verificarPass()" style="width: 100%; margin-top: 8px; padding: 8px; background: #333; color: white; border: 1px solid #555; border-radius: 4px; cursor: pointer;">Entrar</button>
+        </div>
+        <div id="bloqueInputsStock" style="display: none;"></div>
+      `;
+
+      document.getElementById('modalEditor').style.display = 'flex';
+    }
+
+    function verificarPass() {
+      const inputPass = document.getElementById('passInput').value;
+      if (inputPass !== CLAVE_ADMIN) {
+        alert("Clave incorrecta.");
+        return;
+      }
+      cargarCamposStock();
+    }
+
+    function cargarCamposStock() {
+      document.getElementById('bloquePass').style.display = 'none';
+      const bloqueStock = document.getElementById('bloqueInputsStock');
+      bloqueStock.style.display = 'block';
+      bloqueStock.innerHTML = '';
+
+      Object.keys(inventario[selectedColor]).forEach(talla => {
+        const stockActual = inventario[selectedColor][talla];
+        bloqueStock.innerHTML += `
+          <div class="fila-stock">
+            <span>Talla <strong>${talla}</strong>:</span>
+            <input type="number" id="input-stock-${talla}" min="0" value="${stockActual}">
+          </div>
+        `;
+      });
+    }
+
+    function guardarNuevoStock() {
+      const bloqueStock = document.getElementById('bloqueInputsStock');
+      if (!bloqueStock || bloqueStock.style.display === 'none') {
+        alert('Ingresa la contraseña primero.');
+        return;
+      }
+
+      Object.keys(inventario[selectedColor]).forEach(talla => {
+        const input = document.getElementById(`input-stock-${talla}`);
+        if (input) {
+          const val = parseInt(input.value);
+          inventario[selectedColor][talla] = isNaN(val) ? 0 : val;
+        }
+      });
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(inventario));
+      
+      cerrarModal();
+      document.getElementById('admin-panel').style.display = 'none';
+      validarDisponibilidadTallas();
+    }
+
+    function cerrarModal() {
+      document.getElementById('modalEditor').style.display = 'none';
+    }
+
+    function actualizarVistaAdmin(stock) {
+      document.getElementById('admin-talla-lbl').innerText = selectedSize || 'N/A';
+      document.getElementById('admin-stock-val').innerText = stock;
+    }
+
+    validarDisponibilidadTallas();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Punto Store Web</title>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-top: 70px;
+    background-color: #121212;
+  }
+
+  /* Header / Menú */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    box-sizing: border-box;
+    z-index: 1000;
+    border-bottom: 1px solid #2a2a2a;
+    transition: top 0.3s ease-in-out;
+  }
+
+  header.nav-hidden {
+    top: -70px;
+  }
+
+  .logo img {
+    height: 45px;
+    width: auto;
+    display: block;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+  }
+
+  nav a:hover {
+    color: #00bcd4;
+  }
+
+  /* --- ESTILOS DEL CARRUSEL --- */
+  .seccion-carrusel {
+    margin-top: 20px;
+    padding: 80px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                url('logo.png') center/cover no-repeat fixed;
+    background-color: #121212;
+    min-height: auto;
+    box-sizing: border-box;
+  }
+
+  .titulo-seccion {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+  }
+
+  .carrusel-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: 550px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #000;
+  }
+
+  .carrusel-track {
+    display: flex;
+    width: 300%; /* 3 fotos = 300% */
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .carrusel-slide {
+    width: calc(100% / 3);
+    height: 100%;
+    position: relative;
+    background-color: #050208;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .carrusel-slide img {
+    width: 100%; 
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .carrusel-btn {
+    position: absolute; 
+    top: 50%; 
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6); 
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white; 
+    width: 50px; 
+    height: 50px; 
+    border-radius: 50%;
+    cursor: pointer; 
+    font-size: 18px; 
+    transition: 0.3s; 
+    z-index: 10;
+  }
+
+  .carrusel-btn:hover {
+    background: #00bcd4; 
+    color: #000;
+  }
+
+  .btn-prev { left: 20px; }
+  .btn-next { right: 20px; }
+
+  /* Estilos Generales de Secciones */
+  section {
+    padding: 80px 20px;
+    box-sizing: border-box;
+    min-height: 100vh;
+  }
+
+  .section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Fondos de Secciones */
+  #camisetas {
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                url('fondo_camisetas.jpg') center/cover no-repeat fixed;
+    background-color: #1a1a1a;
+  }
+
+  #pantalones {
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                url('fondo_jeans.jpg') center/cover no-repeat fixed;
+    background-color: #24292e;
+  }
+
+  #Sudaderas {
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                url('fondo_sudaderas.jpg') center/cover no-repeat fixed;
+    background-color: #12181b;
+  }
+
+  #buzos {
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                url('fondo_buzos.jpg') center/cover no-repeat fixed;
+    background-color: #1b1218;
+  }
+
+  #reloj {
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                url('fondo_reloj.jpg') center/cover no-repeat fixed;
+    background-color: #121b18;
+  }
+
+  /* CONTENEDOR PRINCIPAL: OBLIGA A USAR 3 COLUMNAS EXACTAS E IGUALES */
+  .contenedor-productos {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* TARJETA INDIVIDUAL */
+  .tarjeta-producto {
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+  }
+
+  .tarjeta-producto:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .tarjeta-producto img {
+    width: 100% !important;
+    height: 280px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block;
+  }
+
+  .info-producto {
+    padding: 15px;
+    text-align: center;
+  }
+
+  .info-producto h3 {
+    margin: 10px 0 5px;
+    font-size: 1.1rem;
+    color: #333333;
+  }
+
+  .precio {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #008cba;
+    margin: 10px 0;
+  }
+
+  .boton-comprar {
+    display: inline-block;
+    width: 100%;
+    padding: 10px 0;
+    background-color: #1a1a1a;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-sizing: border-box;
+  }
+
+  .boton-comprar:hover {
+    background-color: #00bcd4;
+  }
+
+  /* ADAPTACIÓN PARA CELULARES */
+  @media (max-width: 768px) {
+    .contenedor-productos {
+      grid-template-columns: 1fr !important;
+    }
+    nav a {
+      margin-left: 8px;
+      font-size: 0.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Barra de navegación con Logo -->
+  <header id="navbar">
+    <div class="logo">
+      <a href="#"><img src="logo.png" alt="Logo de la tienda"></a>
+    </div>
+    <nav>
+      <a href="#camisetas">Camisetas</a>
+      <a href="#pantalones">Pantalones</a>
+      <a href="#Sudaderas">Sudaderas</a>
+      <a href="#buzos">Buzos</a>
+      <a href="#reloj">Relojes</a>
+    </nav>
+  </header>
+
+  <!-- CARRUSEL AL PRINCIPIO DE LA WEB -->
+  <section class="seccion-carrusel">
+      <h2 class="titulo-seccion">Destacados</h2>
+      <div class="carrusel-container">
+          <button class="carrusel-btn btn-prev" onclick="moverCarrusel(-1)">❮</button>
+          <button class="carrusel-btn btn-next" onclick="moverCarrusel(1)">❯</button>
+          
+          <div class="carrusel-track" id="track">
+              <div class="carrusel-slide">
+                  <img src="carrusel 1.1.jpg" alt="Modelo 1">
+              </div>
+              <div class="carrusel-slide">
+                  <img src="carrusel 1.jpg" alt="Modelo 2">
+              </div>
+              <div class="carrusel-slide">
+                  <img src="carrusel 2.jpg" alt="Modelo 3">
+              </div>
+               <div class="carrusel-slide">
+                  <img src="carrusel.jpg" alt="Modelo 4">
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <!-- Sección Camisetas -->
+  <section id="camisetas">
+    <div class="section-container">
+      <h2>Camisetas</h2>
+      <div class="contenedor-productos">
+        
+        <div class="tarjeta-producto">
+          <img src="camisera e 1.jpg" alt="Camiseta Negra">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 1.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camisera e 2.jpg" alt="Camiseta Blanca">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 2.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camisera e 3.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 3.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camisera e 4.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 4.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camisera e 5.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 5.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camisera e 6.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 6.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta e7.jpeg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 7.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camisera e 8.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 8.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camisera e 9.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 9.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camisera e 10.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 10.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+         <div class="tarjeta-producto">
+          <img src="camisera 11.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta emotion 11.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="camisera e 13.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta 12.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="camisera e 14.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Mixed Emotion Angel</h3>
+            <p class="precio">$110.000 COP</p>
+            <a href="camiseta 12.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 1.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 1.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 2.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 2.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 3.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 4.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 4.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 5.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 5.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 6.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 6.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 7.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 7.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 8.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 8.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 9.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 9.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 10.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 10.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="camiseta 12.jpg" alt="Camiseta Estampada">
+          <div class="info-producto">
+            <h3>Camiseta Hellstar face robot</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="camiseta 11.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+         
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Pantalones -->
+  <section id="pantalones">
+    <div class="section-container">
+      <h2>Pantalones</h2>
+      <div class="contenedor-productos">
+        
+        <div class="tarjeta-producto">
+          <img src="novamen.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 1.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="novamen 1.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 2.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="novamen 3.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 3.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="novamen 4.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 4.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="novamen 5.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 5.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="novamen 6.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 6.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="novamen 7.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 7.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="novamen 8.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 8.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="novamen 9.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 9.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="novamen 10.png" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 10.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="novamen 11.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 11.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="novamen 12.jpg" alt="Jean Azul">
+          <div class="info-producto">
+            <h3>Jeans novamen</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="novamen 12.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Sudaderas -->
+  <section id="Sudaderas">
+    <div class="section-container">
+      <h2>Sudaderas</h2>
+      <div class="contenedor-productos">
+        
+        <div class="tarjeta-producto">
+          <img src="tech 1.jpg" alt="Sudadera Nike Tech">
+          <div class="info-producto">
+            <h3>Nike tech</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="tech 1.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+      
+        <div class="tarjeta-producto">
+          <img src="tech 2.jpg" alt="Sudadera Nike Tech">
+          <div class="info-producto">
+            <h3>Nike tech</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="tech 2.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="tech 3.jpg" alt="Sudadera Nike Tech">
+          <div class="info-producto">
+            <h3>Nike tech</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="tech 3.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="tech 47.jpg" alt="Sudadera Nike Tech">
+          <div class="info-producto">
+            <h3>Nike tech</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="tech 4.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="tech 5.jpg" alt="Sudadera Nike Tech">
+          <div class="info-producto">
+            <h3>Nike tech</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="tech 5.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="tech 6.jpg" alt="Sudadera Nike Tech">
+          <div class="info-producto">
+            <h3>Nike tech</h3>
+            <p class="precio">$250.000 COP</p>
+            <a href="tech 6.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="lacost.jpg" alt="Sudadera Lacoste">
+          <div class="info-producto">
+            <h3>Sudadera lacost</h3>
+            <p class="precio">$310.000 COP</p>
+            <a href="Lacost 1.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="lacost 1.jpg" alt="Sudadera Lacoste">
+          <div class="info-producto">
+            <h3>Sudadera lacost</h3>
+            <p class="precio">$310.000 COP</p>
+            <a href="Lacost 2.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="lacost.jpg" alt="Sudadera Lacoste">
+          <div class="info-producto">
+            <h3>Sudadera lacost</h3>
+            <p class="precio">$310.000 COP</p>
+            <a href="Lacost 3.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Buzos -->
+  <section id="buzos">
+    <div class="section-container">
+      <h2>Buzos</h2>
+      <div class="contenedor-productos">
+        
+        <div class="tarjeta-producto">
+          <img src="hellstar r 1.png" alt="Buzo Estampado">
+          <div class="info-producto">
+            <h3>Buzo hellstar</h3>
+            <p class="precio">$75.000 COP</p>
+            <a href="hellstar r.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="hellstar n 1.png" alt="Buzo Estampado">
+          <div class="info-producto">
+            <h3>Buzo hellstar</h3>
+            <p class="precio">$75.000 COP</p>
+            <a href="hellstar n.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="hellstar bla.png" alt="Buzo Estampado">
+          <div class="info-producto">
+            <h3>Buzo hellstar </h3>
+            <p class="precio">$75.000 COP</p>
+            <a href="hellstar bla.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Relojes -->
+  <section id="reloj">
+    <div class="section-container">
+      <h2>Relojes</h2>
+      <div class="contenedor-productos">
+        
+        <div class="tarjeta-producto">
+          <img src="rolex sky.png" alt="Reloj Elegante">
+          <div class="info-producto">
+            <h3>Reloj Rolex sky</h3>
+            <p class="precio">$80.000 COP</p>
+            <a href="relojes sky.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="ROLEX DAYTHONA.png" alt="Reloj Elegante">
+          <div class="info-producto">
+            <h3>Reloj Rolex DAYTHONA</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="Rolex DAYTHONA.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+
+        <div class="tarjeta-producto">
+          <img src="PATEK PHILPPE.png" alt="Reloj Elegante">
+          <div class="info-producto">
+            <h3>Reloj Patek Philppe G5</h3>
+            <p class="precio">$95.000 COP</p>
+            <a href="Patek Philppe G5.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+       <div class="tarjeta-producto">
+          <img src="RELOJ G-SHOK.png" alt="Reloj Elegante">
+          <div class="info-producto">
+            <h3>RELOJ G-SHOK</h3>
+            <p class="precio">$75.000 COP</p>
+            <a href="RELOJ G-SHOK.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="ROLEX MT 1.1.png" alt="Reloj Elegante">
+          <div class="info-producto">
+            <h3>ROLEX MT </h3>
+            <p class="precio">$85.000 COP</p>
+            <a href="ROLEX MT 1.1.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+             <div class="tarjeta-producto">
+          <img src="rolex..png" alt="Reloj Elegante">
+          <div class="info-producto">
+            <h3>ROLEX  </h3>
+            <p class="precio">$85.000 COP</p>
+            <a href="ROLEX.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="ROLEX SUBMARINE.png" alt="Reloj Elegante">
+          <div class="info-producto">
+            <h3>ROLEX Submarine </h3>
+            <p class="precio">$80.000 COP</p>
+            <a href="rolex submarine.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="rolex tifany.png" alt="Reloj Elegante">
+          <div class="info-producto">
+            <h3>ROLEX tifanny</h3>
+            <p class="precio">$90.000 COP</p>
+            <a href="rolex tifanny.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+        <div class="tarjeta-producto">
+          <img src="cartier.png" alt="Reloj Elegante">
+          <div class="info-producto">
+            <h3>Cartier</h3>
+            <p class="precio">$80.000 COP</p>
+            <a href="cartier.html" class="boton-comprar">Comprar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Script para carrusel y menú -->
+  <script>
+    let indiceActual = 0;
+    const totalSlides = 3;
+    const track = document.getElementById('track');
+
+    function moverCarrusel(direccion) {
+        indiceActual += direccion;
+        if (indiceActual < 0) indiceActual = totalSlides - 1;
+        if (indiceActual >= totalSlides) indiceActual = 0;
+        
+        const porcentajePorSlide = 100 / totalSlides;
+        track.style.transform = `translateX(-${indiceActual * porcentajePorSlide}%)`;
+    }
+
+    setInterval(() => moverCarrusel(1), 5000);
+
+    let lastScrollTop = 0;
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', function() {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > lastScrollTop) {
+        navbar.classList.add('nav-hidden');
+      } else {
+        navbar.classList.remove('nav-hidden');
+      }
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+  </script>
+</body>
+</html>
