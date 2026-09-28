@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Camisetas - Punto Store Web</title>
+<style>
+  html { 
+    scroll-behavior: smooth; 
+  }
+  
+  body { 
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding-top: 70px; 
+    background-color: #121212; 
+    overflow-x: hidden;
+  }
+
+  /* Barra de navegación */
+  header {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 70px;
+    background-color: #1a1a1a; 
+    display: flex; 
+    justify-content: space-between;
+    align-items: center; 
+    padding: 0 15px; 
+    box-sizing: border-box; 
+    z-index: 1000;
+    border-bottom: 1px solid #2a2a2a; 
+    transition: top 0.3s ease-in-out;
+  }
+  
+  header.nav-hidden { 
+    top: -70px; 
+  }
+  
+  .logo img { 
+    height: 38px; 
+    width: auto; 
+    display: block; 
+  }
+  
+  nav { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+  }
+  
+  nav a { 
+    color: white; 
+    text-decoration: none; 
+    font-weight: bold; 
+    font-size: 0.85rem; 
+    transition: color 0.3s; 
+    white-space: nowrap; 
+  }
+  
+  nav a:hover { 
+    color: #00bcd4; 
+  }
+
+  /* Estilo especial para Mayoristas */
+  nav a.link-mayorista {
+    color: #25d366;
+  }
+  nav a.link-mayorista:hover {
+    color: #1ebe5d;
+  }
+
+  section { 
+    padding: 40px 10px; 
+    box-sizing: border-box; 
+    min-height: 100vh; 
+  }
+  
+  .section-container { 
+    max-width: 1200px; 
+    margin: 0 auto; 
+  }
+  
+  section h2 { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    font-size: 2.5rem; 
+    color: #ffffff; 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8); 
+  }
+  
+  #camisetas {
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                url('fondo_camisetas.jpg') center/cover no-repeat fixed;
+    background-color: #1a1a1a;
+  }
+  
+  .contenedor-productos {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 20px; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    width: 100%; 
+    box-sizing: border-box;
+  }
+  
+  .tarjeta-producto {
+    width: 100%; 
+    background-color: #ffffff; 
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); 
+    overflow: hidden;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    box-sizing: border-box;
+  }
+  
+  .tarjeta-producto:hover { 
+    transform: translateY(-8px); 
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
+  }
+  
+  .tarjeta-producto img { 
+    width: 100% !important; 
+    height: 280px !important; 
+    object-fit: cover !important; 
+    object-position: center !important; 
+    display: block; 
+  }
+  
+  .info-producto { 
+    padding: 15px; 
+    text-align: center; 
+  }
+  
+  .info-producto h3 { 
+    margin: 10px 0 5px; 
+    font-size: 1.1rem; 
+    color: #333333; 
+  }
+  
+  .precio { 
+    font-size: 1.2rem; 
+    font-weight: bold; 
+    color: #008cba; 
+    margin: 10px 0; 
+  }
+  
+  .boton-comprar {
+    display: inline-block; 
+    width: 100%; 
+    padding: 10px 0; 
+    background-color: #1a1a1a;
+    color: white; 
+    text-decoration: none; 
+    border: none; 
+    border-radius: 5px;
+    font-weight: bold; 
+    cursor: pointer; 
+    transition: background-color 0.3s; 
+    box-sizing: border-box;
+  }
+  
+  .boton-comprar:hover { 
+    background-color: #00bcd4; 
+  }
+
+  /* --- MEDIA QUERIES PARA CELULARES Y TABLETS --- */
+  @media (max-width: 1024px) {
+    .contenedor-productos {
+      gap: 15px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    header {
+      padding: 0 8px;
+    }
+    .logo img {
+      height: 30px;
+    }
+    nav {
+      gap: 4px;
+    }
+    nav a { 
+      font-size: 0.6rem; 
+    }
+    
+    /* 3 cajitas por fila en celulares */
+    .contenedor-productos { 
+      grid-template-columns: repeat(3, 1fr) !important; 
+      gap: 6px;
+    }
+
+    .tarjeta-producto img {
+      height: 110px !important; /* Altura compacta para que no ocupen tanto espacio vertical */
+    }
+
+    .info-producto {
+      padding: 6px;
+    }
+
+    .info-producto h3 {
+      font-size: 0.65rem; /* Letra más pequeña para que quepa bien en las 3 columnas */
+      margin: 4px 0 2px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* Limita el texto a 2 líneas para mantener orden */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .precio {
+      font-size: 0.7rem;
+      margin: 4px 0;
+    }
+
+    .boton-comprar {
+      padding: 5px 0;
+      font-size: 0.65rem;
+      border-radius: 3px;
+    }
+
+    section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+  <header id="navbar">
+    <div class="logo"><a href="index.html"><img src="logo.png" alt="Logo de la tienda"></a></div>
+    <nav>
+      <a href="camisetas.html">Camisetas</a>
+      <a href="pantalones.html">Pantalones</a>
+      <a href="sudaderas.html">Sudaderas</a>
+      <a href="buzos.html">Buzos</a>
+      <a href="reloj.html">Relojes</a>
+      <a href="https://api.whatsapp.com/send?phone=573124218541&text=HOLA%20QUIERO%20HACER%20UN%20PEDIDO%20MAYORISTA%20ME%20ASESORAS" class="link-mayorista" target="_blank" rel="noopener noreferrer">Mayoristas</a>
+    </nav>
+  </header>
+
+  <section id="camisetas">
+    <div class="section-container">
+      <h2>Camisetas</h2>
+      <div class="contenedor-productos">
+        <div class="tarjeta-producto"><img src="camisera e 1.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 1.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 2.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 2.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 3.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 3.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 4.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 4.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 5.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 5.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 6.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 6.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta e7.jpeg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 7.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 8.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 8.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 9.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 9.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 10.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 10.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera 11.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta emotion 11.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 13.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta 12.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 14.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta 12.html" class="boton-comprar">Comprar</a></div></div>
+         <div class="tarjeta-producto"><img src="camisera e 15.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta 15.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera e 16.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta 16.html" class="boton-comprar">Comprar</a></div></div>
+         <div class="tarjeta-producto"><img src="camisera e 17.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta e 17.html" class="boton-comprar">Comprar</a></div></div>
+         <div class="tarjeta-producto"><img src="camisera 18.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta e 18.html" class="boton-comprar">Comprar</a></div></div>
+         <div class="tarjeta-producto"><img src="camisera e 18.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta e 19.html" class="boton-comprar">Comprar</a></div></div>
+          <div class="tarjeta-producto"><img src="camisera e 20.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta e 20.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camisera 17.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Mixed Emotion Angel</h3><p class="precio">$110.000 COP</p><a href="camiseta 17.html" class="boton-comprar">Comprar</a></div></div>
+         <div class="tarjeta-producto"><img src="camiseta 1.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 1.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta 2.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 2.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 3.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta 4.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 4.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta 5.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 5.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta 6.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 6.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta 7.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 7.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta 8.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 8.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta 9.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 9.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta 10.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 10.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="camiseta 12.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 11.html" class="boton-comprar">Comprar</a></div></div>
+         <div class="tarjeta-producto"><img src="camiseta h 1.jpg" alt="Camiseta"><div class="info-producto"><h3>Camiseta Hellstar face robot</h3><p class="precio">$90.000 COP</p><a href="camiseta 13.html" class="boton-comprar">Comprar</a></div></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let lastScrollTop = 0;
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', function() {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > lastScrollTop) { navbar.classList.add('nav-hidden'); }
+      else { navbar.classList.remove('nav-hidden'); }
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+  </script>
+</body>
+</html>
