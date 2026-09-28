@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Carrito de Compras - Punto Store</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 5%;
+      background-color: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+
+    .cart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1a1a1a;
+      padding: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .item-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .item-details {
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    .item-price {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #00ff88;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+    }
+
+    .qty-controls button {
+      background: #333;
+      color: #fff;
+      border: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .qty-controls button:hover {
+      background: #555;
+    }
+
+    .btn-remove {
+      background: transparent;
+      border: 1px solid #ff4444;
+      color: #ff4444;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .btn-remove:hover {
+      background: #ff4444;
+      color: #000;
+    }
+
+    .cart-summary {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .shipping-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #121212;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #333;
+    }
+
+    .shipping-options label {
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-top: 1px solid #333;
+      padding-top: 10px;
+    }
+
+    .qr-section {
+      text-align: center;
+      background: #121212;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px dashed #444;
+      display: none; /* Oculto por defecto */
+    }
+
+    .qr-section p {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 10px;
+    }
+
+    .qr-section img {
+      width: 180px;
+      height: 180px;
+      object-fit: contain;
+      background: #fff;
+      padding: 6px;
+      border-radius: 6px;
+    }
+
+    .btn-checkout {
+      width: 100%;
+      background-color: #25d366;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn-checkout:hover {
+      opacity: 0.9;
+    }
+
+    .empty-cart {
+      text-align: center;
+      color: #777;
+      margin-top: 40px;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <a href="inicio.html"><img src="logo.png" alt="Logo de la tienda"></a>
+    </div>
+    <div class="nav-links">
+      <a href="inicio.html">≡ Menú</a>
+      <a href="Carrito.html" style="color: #fff;">🛒 Carrito</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Tu Carrito de Compras</h1>
+    
+    <div class="cart-list" id="cart-container">
+      <!-- Los productos se cargan dinámicamente aquí -->
+    </div>
+
+    <div class="cart-summary" id="summary-section" style="display: none;">
+      
+      <!-- Opciones de pago y envío -->
+      <div class="shipping-options">
+        <p style="font-weight: bold; margin-bottom: 5px; color: #fff;">Selecciona tu método de pago:</p>
+        
+        <label>
+          <input type="radio" name="metodoPago" value="anticipado" checked onchange="cambiarMetodoPago()">
+          Pago anticipado con envío gratis (+ $10.000)
+        </label>
+        
+        <label>
+          <input type="radio" name="metodoPago" value="contraentrega" onchange="cambiarMetodoPago()">
+          Pago contra entrega (Pagas al recibir)
+        </label>
+        
+        <label>
+          <input type="radio" name="metodoPago" value="apartado" onchange="cambiarMetodoPago()">
+          Aparta con $10.000 la prenda y pasa a recoger en bodega
+        </label>
+      </div>
+
+      <div class="total-row">
+        <span id="label-total">Total a pagar:</span>
+        <span id="cart-total">$0</span>
+      </div>
+
+      <!-- Sección del QR (Oculto inicialmente) -->
+      <div class="qr-section" id="qr-contenedor">
+        <p id="qr-texto">Escanea el código QR para realizar tu pago:</p>
+        <img id="qr-imagen" src="qr-de-pago.jpg" alt="Código QR de Pago">
+      </div>
+
+      <button class="btn-checkout" id="btn-accion" onclick="manejarAccionPago()">Mostrar QR para Pagar</button>
+    </div>
+  </div>
+
+  <script>
+    function cargarCarrito() {
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      const contenedor = document.getElementById('cart-container');
+      const resumen = document.getElementById('summary-section');
+      
+      contenedor.innerHTML = '';
+
+      if (carrito.length === 0) {
+        contenedor.innerHTML = '<div class="empty-cart">Tu carrito está vacío. ¡Agrega algunos productos!</div>';
+        resumen.style.display = 'none';
+        return;
+      }
+
+      resumen.style.display = 'flex';
+
+      carrito.forEach((item, index) => {
+        let subtotal = item.precio * item.cantidad;
+
+        contenedor.innerHTML += `
+          <div class="cart-item">
+            <div class="item-info">
+              <span class="item-name">${item.nombre}</span>
+              <span class="item-details">Color: ${item.color} | Talla: ${item.talla}</span>
+              <div class="qty-controls">
+                <span>Cant:</span>
+                <button onclick="cambiarCantidad(${index}, -1)">-</button>
+                <span>${item.cantidad}</span>
+                <button onclick="cambiarCantidad(${index}, 1)">+</button>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+              <span class="item-price">$${subtotal.toLocaleString()}</span>
+              <button class="btn-remove" onclick="eliminarItem(${index})">Eliminar</button>
+            </div>
+          </div>
+        `;
+      });
+
+      actualizarTotales();
+    }
+
+    function cambiarCantidad(index, cambio) {
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      let nuevaCantidad = carrito[index].cantidad + cambio;
+
+      if (nuevaCantidad > 10) {
+        alert("El límite máximo es de 10 unidades por producto.");
+        return;
+      }
+
+      if (nuevaCantidad > 0) {
+        carrito[index].cantidad = nuevaCantidad;
+        localStorage.setItem('miCarrito', JSON.stringify(carrito));
+        cargarCarrito();
+      }
+    }
+
+    function eliminarItem(index) {
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      carrito.splice(index, 1);
+      localStorage.setItem('miCarrito', JSON.stringify(carrito));
+      cargarCarrito();
+    }
+
+    function cambiarMetodoPago() {
+      const qrSeccion = document.getElementById('qr-contenedor');
+      const btnAccion = document.getElementById('btn-accion');
+      const metodoSeleccionado = document.querySelector('input[name="metodoPago"]:checked').value;
+
+      qrSeccion.style.display = 'none';
+
+      if (metodoSeleccionado === 'contraentrega') {
+        btnAccion.innerText = "Notificar Pedido por WhatsApp";
+      } else {
+        btnAccion.innerText = "Mostrar QR para Pagar";
+      }
+
+      actualizarTotales();
+    }
+
+    function actualizarTotales() {
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      let subtotalProductos = 0;
+      let qrAElegir = "qr-de-pago.jpg";
+
+      carrito.forEach(item => {
+        subtotalProductos += item.precio * item.cantidad;
+        if (item.qr) qrAElegir = item.qr;
+      });
+
+      const metodoSeleccionado = document.querySelector('input[name="metodoPago"]:checked').value;
+      const qrImagen = document.getElementById('qr-imagen');
+      const labelTotal = document.getElementById('label-total');
+      const spanTotal = document.getElementById('cart-total');
+
+      qrImagen.src = qrAElegir;
+      let totalFinal = subtotalProductos;
+
+      if (metodoSeleccionado === 'anticipado') {
+        totalFinal += 10000;
+        labelTotal.innerText = "Total a pagar (Incluye envío gratis):";
+      } else if (metodoSeleccionado === 'contraentrega') {
+        labelTotal.innerText = "Total a pagar al recibir:";
+      } else if (metodoSeleccionado === 'apartado') {
+        totalFinal = 10000;
+        labelTotal.innerText = "Anticipo para apartar (Pasa por bodega):";
+      }
+
+      spanTotal.innerText = `$${totalFinal.toLocaleString()}`;
+    }
+
+    function manejarAccionPago() {
+      const metodoSeleccionado = document.querySelector('input[name="metodoPago"]:checked').value;
+      const qrSeccion = document.getElementById('qr-contenedor');
+      const btnAccion = document.getElementById('btn-accion');
+
+      if (metodoSeleccionado === 'contraentrega') {
+        finalizarCompra();
+        return;
+      }
+
+      if (qrSeccion.style.display === 'none' || qrSeccion.style.display === '') {
+        qrSeccion.style.display = 'block';
+        btnAccion.innerText = "Notificar Pedido por WhatsApp";
+      } else {
+        finalizarCompra();
+      }
+    }
+
+    function finalizarCompra() {
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      if (carrito.length === 0) return;
+
+      const metodoSeleccionado = document.querySelector('input[name="metodoPago"]:checked').value;
+      let totalProductos = 0;
+
+      carrito.forEach(item => {
+        totalProductos += item.precio * item.cantidad;
+      });
+
+      let mensaje = "¡Hola! Quiero confirmar mi pedido con los siguientes datos:\n\n";
+
+      if (metodoSeleccionado === 'anticipado') {
+        mensaje += `Método: Pago Anticipado (Envío gratis)\nTotal pagado por QR: $${(totalProductos + 10000).toLocaleString()}\n\n`;
+      } else if (metodoSeleccionado === 'contraentrega') {
+        mensaje += `Método: Pago Contra Entrega\nTotal a cancelar al recibir: $${totalProductos.toLocaleString()}\n\n`;
+      } else if (metodoSeleccionado === 'apartado') {
+        mensaje += `Método: Apartar con $10.000 (Recoge en bodega)\nAnticipo pagado por QR: $10.000\n\n`;
+      }
+
+      mensaje += "Productos:\n";
+      carrito.forEach(item => {
+        let sub = item.precio * item.cantidad;
+        mensaje += `- ${item.nombre} | Talla: ${item.talla} | Cant: ${item.cantidad} | Subtotal: $${sub.toLocaleString()}\n`;
+      });
+
+      let numeroWhatsApp = "573124218541";
+      let url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, '_blank');
+    }
+
+    cargarCarrito();
+  </script>
+
+</body>
+</html>
