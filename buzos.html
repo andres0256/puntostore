@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Buzos - Punto Store Web</title>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: Arial, sans-serif; margin: 0; padding-top: 70px; background-color: #121212; overflow-x: hidden; }
+  header {
+    position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+    background-color: #1a1a1a; display: flex; justify-content: space-between;
+    align-items: center; padding: 0 15px; box-sizing: border-box; z-index: 1000;
+    border-bottom: 1px solid #2a2a2a; transition: top 0.3s ease-in-out;
+  }
+  header.nav-hidden { top: -70px; }
+  .logo img { height: 38px; width: auto; display: block; }
+  nav { display: flex; align-items: center; gap: 8px; }
+  nav a { color: white; text-decoration: none; font-weight: bold; font-size: 0.85rem; transition: color 0.3s; white-space: nowrap; }
+  nav a:hover { color: #00bcd4; }
+  
+  section { padding: 40px 10px; box-sizing: border-box; min-height: 100vh; }
+  .section-container { max-width: 1200px; margin: 0 auto; }
+  section h2 { text-align: center; margin-bottom: 30px; font-size: 2.5rem; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8); }
+  #buzos {
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                url('fondo_buzos.jpg') center/cover no-repeat fixed;
+    background-color: #1b1218;
+  }
+  .contenedor-productos {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 20px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box;
+  }
+  .tarjeta-producto {
+    width: 100%; background-color: #ffffff; border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); overflow: hidden;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; box-sizing: border-box;
+  }
+  .tarjeta-producto:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); }
+  .tarjeta-producto img { width: 100% !important; height: 280px !important; object-fit: cover !important; object-position: center !important; display: block; }
+  .info-producto { padding: 15px; text-align: center; }
+  .info-producto h3 { margin: 10px 0 5px; font-size: 1.1rem; color: #333333; }
+  .precio { font-size: 1.2rem; font-weight: bold; color: #008cba; margin: 10px 0; }
+  .boton-comprar {
+    display: inline-block; width: 100%; padding: 10px 0; background-color: #1a1a1a;
+    color: white; text-decoration: none; border: none; border-radius: 5px;
+    font-weight: bold; cursor: pointer; transition: background-color 0.3s; box-sizing: border-box;
+  }
+  .boton-comprar:hover { background-color: #00bcd4; }
+
+  /* --- MEDIA QUERIES PARA CELULARES Y TABLETS --- */
+  @media (max-width: 1024px) {
+    .contenedor-productos { gap: 15px; }
+  }
+
+  @media (max-width: 768px) {
+    header { padding: 0 8px; }
+    .logo img { height: 30px; }
+    nav { gap: 4px; }
+    nav a { font-size: 0.6rem; }
+    
+    /* 3 cajitas por fila en celulares */
+    .contenedor-productos { 
+      grid-template-columns: repeat(3, 1fr) !important; 
+      gap: 6px;
+    }
+
+    .tarjeta-producto img {
+      height: 110px !important; 
+    }
+
+    .info-producto { padding: 6px; }
+
+    .info-producto h3 {
+      font-size: 0.65rem; 
+      margin: 4px 0 2px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; 
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .precio {
+      font-size: 0.7rem;
+      margin: 4px 0;
+    }
+
+    .boton-comprar {
+      padding: 5px 0;
+      font-size: 0.65rem;
+      border-radius: 3px;
+    }
+
+    section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+  <header id="navbar">
+    <div class="logo"><a href="index.html"><img src="logo.png" alt="Logo de la tienda"></a></div>
+    <nav>
+      <a href="camisetas.html">Camisetas</a>
+      <a href="pantalones.html">Pantalones</a>
+      <a href="sudaderas.html">Sudaderas</a>
+      <a href="buzos.html">Buzos</a>
+      <a href="reloj.html">Relojes</a>
+    </nav>
+  </header>
+
+  <section id="buzos">
+    <div class="section-container">
+      <h2>Buzos</h2>
+      <div class="contenedor-productos">
+        <div class="tarjeta-producto"><img src="hellstar r 1.png" alt="Buzo"><div class="info-producto"><h3>Buzo hellstar</h3><p class="precio">$75.000 COP</p><a href="hellstar r.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="hellstar n 1.png" alt="Buzo"><div class="info-producto"><h3>Buzo hellstar</h3><p class="precio">$75.000 COP</p><a href="hellstar n.html" class="boton-comprar">Comprar</a></div></div>
+        <div class="tarjeta-producto"><img src="hellstar bla.png" alt="Buzo"><div class="info-producto"><h3>Buzo hellstar</h3><p class="precio">$75.000 COP</p><a href="hellstar bla.html" class="boton-comprar">Comprar</a></div></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let lastScrollTop = 0;
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', function() {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > lastScrollTop) { navbar.classList.add('nav-hidden'); }
+      else { navbar.classList.remove('nav-hidden'); }
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+  </script>
+</body>
+</html>

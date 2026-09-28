@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Carrito de Compras - Punto Store</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 5%;
+      background-color: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+
+    .cart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1a1a1a;
+      padding: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .item-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .item-details {
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    .item-price {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #00ff88;
+    }
+
+    .btn-remove {
+      background: transparent;
+      border: 1px solid #ff4444;
+      color: #ff4444;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .btn-remove:hover {
+      background: #ff4444;
+      color: #000;
+    }
+
+    .cart-summary {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .btn-checkout {
+      width: 100%;
+      background-color: #25d366;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn-checkout:hover {
+      opacity: 0.9;
+    }
+
+    .empty-cart {
+      text-align: center;
+      color: #777;
+      margin-top: 40px;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <a href="inicio.html"><img src="logo.png" alt="Logo de la tienda"></a>
+    </div>
+    <div class="nav-links">
+      <a href="inicio.html">≡ Menú</a>
+      <a href="carrito.html" style="color: #fff;">🛒 Carrito</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Tu Carrito de Compras</h1>
+    
+    <div class="cart-list" id="cart-container">
+      <!-- Los productos se cargan dinámicamente aquí -->
+    </div>
+
+    <div class="cart-summary" id="summary-section" style="display: none;">
+      <div class="total-row">
+        <span>Total:</span>
+        <span id="cart-total">$0</span>
+      </div>
+      <button class="btn-checkout" onclick="finalizarCompra()">Completar Pedido por WhatsApp</button>
+    </div>
+  </div>
+
+  <script>
+    function cargarCarrito() {
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      const contenedor = document.getElementById('cart-container');
+      const resumen = document.getElementById('summary-section');
+      
+      contenedor.innerHTML = '';
+
+      if (carrito.length === 0) {
+        contenedor.innerHTML = '<div class="empty-cart">Tu carrito está vacío. ¡Agrega algunos productos!</div>';
+        resumen.style.display = 'none';
+        return;
+      }
+
+      resumen.style.display = 'flex';
+      let total = 0;
+
+      carrito.forEach((item, index) => {
+        let subtotal = item.precio * item.cantidad;
+        total += subtotal;
+
+        contenedor.innerHTML += `
+          <div class="cart-item">
+            <div class="item-info">
+              <span class="item-name">${item.nombre}</span>
+              <span class="item-details">Color: ${item.color} | Talla: ${item.talla} | Cantidad: ${item.cantidad}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+              <span class="item-price">$${subtotal.toLocaleString()}</span>
+              <button class="btn-remove" onclick="eliminarItem(${index})">Eliminar</button>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById('cart-total').innerText = `$${total.toLocaleString()}`;
+    }
+
+    function eliminarItem(index) {
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      carrito.splice(index, 1);
+      localStorage.setItem('miCarrito', JSON.stringify(carrito));
+      cargarCarrito();
+    }
+
+    function finalizarCompra() {
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      if (carrito.length === 0) return;
+
+      let mensaje = "¡Hola! Quiero realizar el siguiente pedido:\n\n";
+      let total = 0;
+
+      carrito.forEach(item => {
+        let subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        mensaje += `- ${item.nombre} | Talla: ${item.talla} | Cantidad: ${item.cantidad} | Subtotal: $${subtotal.toLocaleString()}\n`;
+      });
+
+      mensaje += `\n*Total a pagar: $${total.toLocaleString()}*`;
+
+      let numeroWhatsApp = "573124218541"; // Reemplaza con tu número de WhatsApp
+      let url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, '_blank');
+    }
+
+    cargarCarrito();
+  </script>
+
+</body>
+</html>
