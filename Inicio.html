@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Punto Store Web - Inicio</title>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-top: 70px;
+    background-color: #121212;
+    overflow-x: hidden;
+  }
+
+  /* Header / Menú */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    box-sizing: border-box;
+    z-index: 1000;
+    border-bottom: 1px solid #2a2a2a;
+    transition: top 0.3s ease-in-out;
+  }
+
+  header.nav-hidden {
+    top: -70px;
+  }
+
+  .logo img {
+    height: 38px;
+    width: auto;
+    display: block;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.85rem;
+    transition: color 0.3s;
+    white-space: nowrap;
+  }
+
+  nav a:hover {
+    color: #00bcd4;
+  }
+
+  /* Enlace de Mayoristas */
+  nav a.link-mayorista {
+    color: #25d366;
+  }
+  nav a.link-mayorista:hover {
+    color: #1ebe5d;
+  }
+
+  /* --- CARRUSEL CON FONDO TRANSPARENTE Y SIN CORTES --- */
+  .seccion-carrusel {
+    margin-top: 0;
+    padding: 40px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('logo.png') center/cover no-repeat fixed;
+    background-color: #121212;
+    min-height: 85vh;
+    box-sizing: border-box;
+    justify-content: center;
+  }
+
+  .titulo-seccion {
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+  }
+
+  .carrusel-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: 600px;
+    overflow: hidden;
+    border-radius: 12px;
+    /* QUITAMOS el fondo sólido y dejamos solo una sombra elegante y borde sutil */
+    background: transparent;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .carrusel-track {
+    display: flex;
+    width: 400%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .carrusel-slide {
+    width: calc(100% / 4);
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    background: transparent; /* Fondo transparente en cada slide */
+  }
+
+  .carrusel-slide img {
+    width: 100%; 
+    height: 100%;
+    /* 'contain' asegura que la foto se vea completa de la cabeza a los pies sin recortar */
+    object-fit: contain; 
+    object-position: center;
+  }
+
+  .carrusel-btn {
+    position: absolute; 
+    top: 50%; 
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6); 
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white; 
+    width: 45px; 
+    height: 45px; 
+    border-radius: 50%;
+    cursor: pointer; 
+    font-size: 18px; 
+    transition: 0.3s; 
+    z-index: 10;
+  }
+
+  .carrusel-btn:hover {
+    background: #00bcd4; 
+    color: #000;
+  }
+
+  .btn-prev { left: 15px; }
+  .btn-next { right: 15px; }
+
+  /* --- MEDIA QUERY PARA CELULARES --- */
+  @media (max-width: 768px) {
+    header {
+      padding: 0 8px;
+    }
+    .logo img {
+      height: 30px;
+    }
+    nav {
+      gap: 5px;
+    }
+    nav a {
+      font-size: 0.62rem;
+    }
+    .carrusel-container {
+      height: 480px;
+      max-width: 92%;
+      border-radius: 8px;
+    }
+    .titulo-seccion {
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Barra de navegación -->
+  <header id="navbar">
+    <div class="logo">
+      <a href="index.html"><img src="logo.png" alt="Logo de la tienda"></a>
+    </div>
+    <nav>
+      <a href="camisetas.html">Camisetas</a>
+      <a href="pantalones.html">Pantalones</a>
+      <a href="sudaderas.html">Sudaderas</a>
+      <a href="buzos.html">Buzos</a>
+      <a href="reloj.html">Relojes</a>
+      <a href="https://api.whatsapp.com/send?phone=573124218541&text=HOLA%20QUIERO%20HACER%20UN%20PEDIDO%20MAYORISTA%20ME%20ASESORAS" class="link-mayorista" target="_blank" rel="noopener noreferrer">Mayoristas</a>
+    </nav>
+  </header>
+
+  <!-- CARRUSEL -->
+  <section class="seccion-carrusel">
+      <h2 class="titulo-seccion">Destacados</h2>
+      <div class="carrusel-container">
+          <button class="carrusel-btn btn-prev" onclick="moverCarrusel(-1)">❮</button>
+          <button class="carrusel-btn btn-next" onclick="moverCarrusel(1)">❯</button>
+          
+          <div class="carrusel-track" id="track">
+              <div class="carrusel-slide">
+                  <img src="carrusel 1.1.jpg" alt="Modelo 1">
+              </div>
+              <div class="carrusel-slide">
+                  <img src="carrusel 1.jpg" alt="Modelo 2">
+              </div>
+              <div class="carrusel-slide">
+                  <img src="carrusel 2.jpg" alt="Modelo 3">
+              </div>
+               <div class="carrusel-slide">
+                  <img src="carrusel.jpg" alt="Modelo 4">
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <!-- Script para carrusel y menú -->
+  <script>
+    let indiceActual = 0;
+    const totalSlides = 4;
+    const track = document.getElementById('track');
+
+    function moverCarrusel(direccion) {
+        indiceActual += direccion;
+        if (indiceActual < 0) indiceActual = totalSlides - 1;
+        if (indiceActual >= totalSlides) indiceActual = 0;
+        
+        const porcentajePorSlide = 100 / totalSlides;
+        track.style.transform = `translateX(-${indiceActual * porcentajePorSlide}%)`;
+    }
+
+    setInterval(() => moverCarrusel(1), 5000);
+
+    let lastScrollTop = 0;
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', function() {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (scrollTop > lastScrollTop) {
+        navbar.classList.add('nav-hidden');
+      } else {
+        navbar.classList.remove('nav-hidden');
+      }
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+  </script>
+</body>
+</html>
