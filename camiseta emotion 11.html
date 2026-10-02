@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -140,16 +140,9 @@
 
     .color-swatch.negro { background-color: #000; }
     .color-swatch.blanco { background-color: #fff; }
-    .color-swatch.verde { background-color: #25d366; }
 
-    .color-btn:hover {
-      border-color: #fff;
-    }
-
-    .color-btn.active {
-      background-color: #333;
-      border-color: #fff;
-    }
+    .color-btn:hover { border-color: #fff; }
+    .color-btn.active { background-color: #333; border-color: #fff; }
 
     .sizes-grid {
       display: flex;
@@ -167,22 +160,9 @@
       transition: all 0.2s;
     }
 
-    .size-btn:hover:not(.out-of-stock) {
-      border-color: #fff;
-    }
-
-    .size-btn.active {
-      background-color: #fff;
-      color: #000;
-      border-color: #fff;
-    }
-
-    .size-btn.out-of-stock {
-      opacity: 0.3;
-      cursor: not-allowed;
-      border-color: #222;
-      text-decoration: line-through;
-    }
+    .size-btn:hover:not(.out-of-stock) { border-color: #fff; }
+    .size-btn.active { background-color: #fff; color: #000; border-color: #fff; }
+    .size-btn.out-of-stock { opacity: 0.3; cursor: not-allowed; border-color: #222; text-decoration: line-through; }
 
     .stock-info {
       font-size: 0.85rem;
@@ -194,7 +174,7 @@
       color: #ff4444;
     }
 
-    /* PANEL PRIVADO EN PANTALLA */
+    /* PANEL PRIVADO EN PANTALLA (OCULTO POR DEFECTO) */
     .admin-stock-panel { display: none; font-size: 0.85rem; color: #00ff88; background: #1e261f; padding: 10px; border-radius: 4px; border: 1px dashed #00ff88; margin-top: 5px; }
 
     /* MODAL FLOTANTE EDITOR DE STOCK */
@@ -265,10 +245,40 @@
       cursor: not-allowed;
     }
 
+    /* ESTILOS DEL MODAL PERSONALIZADO (SEGUIR COMPRANDO / IR AL CARRITO) */
+    #modal-notificacion-producto {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+    .modal-prod-contenido {
+      background: #2b2b2b;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      border: 1px solid #444;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      color: #fff;
+    }
+    .modal-prod-contenido h3 { margin-bottom: 10px; font-size: 1.2rem; }
+    .modal-prod-contenido p { margin-bottom: 20px; color: #ccc; font-size: 0.95rem; }
+    .modal-prod-botones { display: flex; gap: 10px; }
+    .modal-prod-btn {
+      flex: 1; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 0.9rem;
+    }
+    .modal-prod-btn-seguir { background: #444; color: #fff; }
+    .modal-prod-btn-seguir:hover { background: #555; }
+    .modal-prod-btn-ir { background: #25d366; color: #000; }
+    .modal-prod-btn-ir:hover { background: #1ebc57; }
+
     @media (max-width: 768px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
+      .container { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -276,19 +286,18 @@
 
   <header>
     <div class="logo">
-      <a href="Inicio.html"><img src="logo.png" alt="Logo de la tienda"></a>
+      <a href="./index.html"><img src="logo.png" alt="Logo de la tienda"></a>
     </div>
     <div class="nav-links">
-      <a href="Inicio.html">≡ Menú</a>
-      <a href="Carrito.html">🛒 Carrito</a>
-      <!-- BOTÓN DIRECTO PARA GESTIONAR INVENTARIO -->
+      <a href="./index.html">≡ Menú</a>
+      <a href=".Carrito.html">🛒 Carrito</a>
       <button class="btn-admin-header" onclick="abrirEditorStock()">⚙ Stock</button>
     </div>
   </header>
 
   <div class="container">
     <div class="product-image">
-      <img src="camisera 11.jpg" id="main-img" alt="Camiseta">
+      <img src="camisera e 1.jpg" id="main-img" alt="Camiseta">
     </div>
 
     <div class="product-details">
@@ -296,17 +305,11 @@
       <h1 class="product-title" id="prod-title">camiseta mixed emotion angel</h1>
       <div class="product-price" id="precio">$110.000</div>
 
-      <!-- SECCIÓN DE SELECCIÓN DE COLOR -->
       <div class="section-label">Color</div>
       <div class="colors-grid">
-        <button class="color-btn active" onclick="selectColor('Negro', this)">
-          <span class="color-swatch negro"></span> Negro
-        </button>
+       
         <button class="color-btn" onclick="selectColor('Blanco', this)">
           <span class="color-swatch blanco"></span> Blanco
-        </button>
-        <button class="color-btn" onclick="selectColor('Verde', this)">
-          <span class="color-swatch verde"></span> Verde
         </button>
       </div>
 
@@ -321,7 +324,6 @@
 
       <div class="stock-info" id="stock-display">Disponibles: 0 unidades</div>
 
-      <!-- PANEL INFORMATIVO ADMIN EN PANTALLA -->
       <div class="admin-stock-panel" id="admin-panel">
         <strong>[MODO ADMIN]</strong> Stock Talla <span id="admin-talla-lbl">-</span>: <span id="admin-stock-val">0</span> unidades.
       </div>
@@ -333,14 +335,12 @@
           <button class="quantity-btn" onclick="changeQty(1)">+</button>
         </div>
         
-        <!-- BOTÓN RESTAURADO CON ID btn-add Y FUNCIÓN addToCart() -->
-       <a href="Carrito.html" class="btn-cart">🛒 Ver Carrito</a>
+        <button class="btn-cart" id="btn-add" onclick="addToCart()">🛒 Agregar al Carrito</button>
       </div>
 
     </div>
   </div>
 
-  <!-- MODAL FLOTANTE EDITOR DE STOCK -->
   <div class="modal-editor" id="modalEditor">
     <div class="modal-content">
       <h3>Gestionar Inventario</h3>
@@ -350,35 +350,26 @@
     </div>
   </div>
 
+  <div id="modal-notificacion-producto">
+    <div class="modal-prod-contenido">
+      <h3 id="modal-prod-titulo">¡Producto Agregado!</h3>
+      <p id="modal-prod-texto">Llevas tus prendas en el carrito.</p>
+      <div class="modal-prod-botones">
+        <button class="modal-prod-btn modal-prod-btn-seguir" onclick="cerrarModalProducto()">Seguir comprando</button>
+        <button class="modal-prod-btn modal-prod-btn-ir" onclick="irAlCarrito()">Ir al carrito</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const CLAVE_ADMIN = "9876";
 
-    // CLAVE ÚNICA DE LOCALSTORAGE PARA ESTA PÁGINA (PÁGINA 11)
-    const STORAGE_KEY = 'inventarioCamisetaEmotion11';
+    // CLAVE DE LOCALSTORAGE PROPIA PARA ESTE PRODUCTO
+    const STORAGE_KEY = 'inventarioEmotionAngel';
 
-    // MATRIZ DE INVENTARIO INICIAL CON LOS VALORES DE TU CÓDIGO (INCLUYE OPCIÓN VERDE)
     const stockInicial = {
-      'Negro': {
-        'S': 0,
-        'M': 1,
-        'L': 2,
-        'XL': 1,
-        'XXL': 1
-      },
-      'Blanco': {
-        'S': 0,
-        'M': 1,
-        'L': 2,
-        'XL': 1,
-        'XXL': 1
-      },
-      'Verde': {
-        'S': 0,
-        'M': 1,
-        'L': 2,
-        'XL': 1,
-        'XXL': 1
-      }
+      'Negro': { 'S': 0, 'M': 0, 'L': 1, 'XL': 1, 'XXL': 0 },
+      'Blanco': { 'S': 0, 'M': 0, 'L': 0, 'XL': 1, 'XXL': 1 }
     };
 
     let inventario = JSON.parse(localStorage.getItem(STORAGE_KEY)) || stockInicial;
@@ -472,9 +463,18 @@
         return;
       }
 
-      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || [];
+      // Lee el carrito de cualquiera de las dos claves habituales para asegurar compatibilidad total
+      let carrito = JSON.parse(localStorage.getItem('miCarrito')) || JSON.parse(localStorage.getItem('carrito')) || [];
+      
+      let totalPrendas = carrito.reduce((sum, item) => sum + (item.cantidad || 1), 0);
+
       const nombreProd = `Camiseta Mixed Emotion Angel (${selectedColor} - ${selectedSize})`;
       let productoExistente = carrito.find(item => item.nombre === nombreProd);
+
+      if (totalPrendas + currentQty > 6) {
+        alert('No puedes superar el límite de 6 prendas en total en tu carrito.');
+        return;
+      }
 
       if (productoExistente) {
         if (productoExistente.cantidad + currentQty > maxStock) {
@@ -492,8 +492,31 @@
         });
       }
 
+      // Guarda en ambas claves para que carrito.html lo detecte sin importar cómo lo lea
       localStorage.setItem('miCarrito', JSON.stringify(carrito));
-      alert(`¡Agregado! ${currentQty} unidad(es) Color: ${selectedColor} / Talla: ${selectedSize}`);
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+
+      let nuevoTotalPrendas = carrito.reduce((sum, item) => sum + (item.cantidad || 1), 0);
+
+      if (nuevoTotalPrendas >= 6) {
+        window.location.href = "Carrito.html";
+      } else {
+        let modal = document.getElementById('modal-notificacion-producto');
+        let texto = document.getElementById('modal-prod-texto');
+        let titulo = document.getElementById('modal-prod-titulo');
+        if (modal && texto) {
+          titulo.innerText = "¡Producto Agregado con Éxito! 🛒";
+          texto.innerText = `Llevas ${nuevoTotalPrendas}/6 prendas en tu carrito.`;
+          modal.style.display = 'flex';
+        }
+      }
+    }
+
+    function cerrarModalProducto() {
+      document.getElementById('modal-notificacion-producto').style.display = 'none';
+    }
+
+    function irAlCarrito() {
       window.location.href = "Carrito.html";
     }
 
