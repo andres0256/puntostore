@@ -290,7 +290,7 @@
     </div>
     <div class="nav-links">
       <a href="./index.html">≡ Menú</a>
-      <a href="./carrito.html">🛒 Carrito</a>
+      <a href="./Carrito.html">🛒 Carrito</a>
       <button class="btn-admin-header" onclick="abrirEditorStock()">⚙ Stock</button>
     </div>
   </header>
@@ -501,7 +501,7 @@
       let nuevoTotalPrendas = carrito.reduce((sum, item) => sum + (item.cantidad || 1), 0);
 
       if (nuevoTotalPrendas >= 6) {
-        window.location.href = "carrito.html";
+        window.location.href = "Carrito.html";
       } else {
         let modal = document.getElementById('modal-notificacion-producto');
         let texto = document.getElementById('modal-prod-texto');
@@ -519,7 +519,7 @@
     }
 
     function irAlCarrito() {
-      window.location.href = "carrito.html";
+      window.location.href = "Carrito.html";
     }
 
     /* GESTIÓN DE MODAL Y AUTENTICACIÓN */
